@@ -1,32 +1,36 @@
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+gi.require_version('AppIndicator3', '0.1')
+gi.require_version('Notify', '0.7')
+from gi.repository import Gtk as gtk
+from gi.repository import AppIndicator3 as appindicator
+from gi.repository import Notify
+import time;
 
-class RadioButton(Gtk.Window):
-    def __init__(self):
-        Gtk.Window.__init__(self)
-        self.connect("destroy", Gtk.main_quit)
+APPINDICATOR_ID = 'myappindicator'
 
-        box = Gtk.Box()
-        box.set_orientation(Gtk.Orientation.VERTICAL)
-        box.set_spacing(5)
-        self.add(box)
 
-        radiobutton1 = Gtk.RadioButton(label="RadioButton 1")
-        radiobutton1.connect("toggled", self.on_radio_button_toggled)
-        box.pack_start(radiobutton1, True, True, 0)
-        radiobutton2 = Gtk.RadioButton(label="RadioButton 2", group=radiobutton1)
-        radiobutton2.connect("toggled", self.on_radio_button_toggled)
-        box.pack_start(radiobutton2, True, True, 0)
-        radiobutton3 = Gtk.RadioButton(label="RadioButton 3", group=radiobutton1)
-        radiobutton3.connect("toggled", self.on_radio_button_toggled)
-        box.pack_start(radiobutton3, True, True, 0)
+class CheckNAS: 
+    def __init__(self): 
+      self.ind =  appindicator.Indicator.new(APPINDICATOR_ID, 'whatever', appindicator.IndicatorCategory.APPLICATION_STATUS)
+      self.ind.set_status (appindicator.IndicatorStatus.ACTIVE)
+      self.ind.set_attention_icon("icon1")
+      self.ind.set_icon("icon2")
+      self.menu_setup()
 
-    def on_radio_button_toggled(self, radiobutton):
-        if radiobutton.get_active():
-            print("%s is active" % (radiobutton.get_label()))
+    def menu_setup(self):
+      self.quit_item = gtk.MenuItem("QUIT") 
+      self.quit_item.connect("activate",self.sensitive)
+      self.quit_item.show()
+      self.menu.append(self.quit_item)
 
-window = RadioButton()
-window.show_all()
-
-Gtk.main()
+    def sensitive(self,widget):
+      if widget.get_sensitive():
+        widget.set_sensitive(False)
+      else:
+        widget.set_sensitive(True)
+    
+    
+    
+if __name__ == "__main__":
+    CheckNAS()
